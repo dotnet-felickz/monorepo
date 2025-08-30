@@ -57,11 +57,19 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.x'
-        include-prerelease: true
 
     - if: matrix.project == 'WUPHF.Mobile'
-      name: "Check and restore MAUI workload if needed"
-      run: dotnet workload list | grep -q "maui" || dotnet workload restore src/WUPHF.Mobile/WUPHF.Mobile.csproj
+      name: "Restore MAUI workloads"
+      shell: pwsh
+      run: |
+        dotnet workload restore src/WUPHF.Mobile/WUPHF.Mobile.csproj
+        #   if (-not (dotnet workload list | Select-String "maui")) {
+            # dotnet workload install maui-android --skip-manifest-update
+            # dotnet workload install maui-ios --skip-manifest-update
+            # dotnet workload install maui-maccatalyst --skip-manifest-update
+            # dotnet workload install maui-windows --skip-manifest-update
+        #   }
+
 
     - if: matrix.build-mode == 'manual'
       name: "Restore and Build ${{ matrix.project }} and Dependencies"
