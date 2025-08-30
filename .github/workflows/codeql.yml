@@ -63,13 +63,22 @@ jobs:
       shell: pwsh
       run: |
         dotnet workload restore src/WUPHF.Mobile/WUPHF.Mobile.csproj
-        #   if (-not (dotnet workload list | Select-String "maui")) {
-            # dotnet workload install maui-android --skip-manifest-update
-            # dotnet workload install maui-ios --skip-manifest-update
-            # dotnet workload install maui-maccatalyst --skip-manifest-update
-            # dotnet workload install maui-windows --skip-manifest-update
-        #   }
 
+        # if (-not (dotnet workload list | Select-String "maui-android")) {
+        #     dotnet workload install maui-android --skip-manifest-update
+        # }
+        # if (-not (dotnet workload list | Select-String "maui-ios")) {
+        #     dotnet workload install maui-ios --skip-manifest-update
+        # }
+        # if (-not (dotnet workload list | Select-String "maui-maccatalyst")) {
+        #     dotnet workload install maui-maccatalyst --skip-manifest-update
+        # }
+        # if (-not (dotnet workload list | Select-String "maui-windows")) {
+        #     dotnet workload install maui-windows --skip-manifest-update
+        # }
+        # if (-not (dotnet workload list | Select-String "maui-tizen ")) {
+        #     dotnet workload install maui-tizen  --skip-manifest-update
+        # }
 
     - if: matrix.build-mode == 'manual'
       name: "Restore and Build ${{ matrix.project }} and Dependencies"
