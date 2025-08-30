@@ -1,0 +1,44 @@
+name: Component Detection
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  dependency-submission:
+    strategy:
+      fail-fast: false
+    runs-on: 'windows-latest'
+    name: Component Detection
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+          # dotnet-quality: 'preview'
+
+      - name: Ensure .NET MAUI workload is installed
+        shell: pwsh
+        run: |
+            dotnet workload restore
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Component Detection
+        uses: advanced-security/component-detection-dependency-submission-action@v0.1.0
+        with:
+          filePath: '.'
