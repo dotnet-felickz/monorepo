@@ -27,41 +27,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: csharp
+        - project: WUPHF.Api
+          language: csharp
           build-mode: manual
-          project: WUPHF.Api
-        - language: csharp
-          build-mode: none
-          project: WUPHF.Mobile
-        - language: csharp
+        - project: WUPHF.Mobile
+          language: csharp
+          build-mode: none # Using none mode to avoid a linux android SDK and windows CodeQL path too long issue here :sigh:
+        - project: WUPHF.Web
+          language: csharp
           build-mode: manual
-          project: WUPHF.Web
-        - language: javascript-typescript
+        - project: WUPHF.Web
+          language: javascript-typescript
           build-mode: none
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    # CodeQL Init
-    - if: matrix.build-mode != 'none'
-      name: "Initialize CodeQL for ${{ matrix.language }} ${{ matrix.project }}"
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-
-    # CodeQL Init - In "none" mode we can be prescriptive about folders scanned (and the dependents)
-    - if: matrix.build-mode == 'none' && matrix.language == 'csharp'
-      name: "Initialize CodeQL for ${{ matrix.language }} ${{ matrix.project }}"
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        config: |
-            paths:
-              - src/${{ matrix.project }}
-              - src/WUPHF.Shared
-
 
     - if: matrix.language == 'csharp'
       uses: actions/setup-dotnet@v4
@@ -90,6 +70,18 @@ jobs:
         #     dotnet workload install maui-tizen  --skip-manifest-update
         # }
 
+    # CodeQL Init
+    - name: "Initialize CodeQL for ${{ matrix.language }} ${{ matrix.project }}"
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        config: |
+            # NOTE: this only works for build-mode: none -  we can be prescriptive about folders scanned (and the dependents)
+            paths:
+              - src/${{ matrix.project }}
+              - src/WUPHF.Shared
+
     - if: matrix.build-mode == 'manual'
       name: "Restore and Build ${{ matrix.project }} and Dependencies"
       shell: bash
@@ -100,5 +92,5 @@ jobs:
     - name: "Perform CodeQL Analysis for ${{ matrix.language }} ${{ matrix.project }}"
       uses: github/codeql-action/analyze@v3
       with:
-        # Adds /project:{project} to the category if <project> is set in the matrix
+        # /language:<lang> + Adds /project:{project} to the category if <project> is set in the matrix
         category: "/language:${{matrix.language}}${{ matrix.project && format('/project:{0}', matrix.project) || '' }}"
