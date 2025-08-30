@@ -32,7 +32,7 @@ jobs:
           build-mode: manual
         - project: WUPHF.Mobile
           language: csharp
-          build-mode: none # Using none mode to avoid a linux android SDK and windows CodeQL path too long issue here :sigh:
+          build-mode: manual
         - project: WUPHF.Web
           language: csharp
           build-mode: manual
