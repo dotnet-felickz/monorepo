@@ -1,0 +1,218 @@
+@page "/send"
+@using WUPHF.Shared.Models
+@using WUPHF.Shared.DTOs
+@using WUPHF.Shared.Constants
+@using System.Text.Json
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Send a WUPHF!</PageTitle>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">🐕 Send a WUPHF Message!</h4>
+                    <small>The ultimate social networking experience!</small>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Oops!</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success">
+                            <strong>WUPHF!</strong> @successMessage
+                        </div>
+                    }
+
+                    <EditForm Model="@sendRequest" OnValidSubmit="@SendWuphfMessage">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="fromUser" class="form-label">From (Your Name)</label>
+                            <InputText id="fromUser" class="form-control" @bind-Value="sendRequest.FromUser" placeholder="Enter your name" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="toUser" class="form-label">To (Recipient)</label>
+                            <InputText id="toUser" class="form-control" @bind-Value="sendRequest.ToUser" placeholder="Enter recipient's name" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" class="form-control" rows="4" @bind="sendRequest.Message"
+                                     placeholder="What do you want to WUPHF about?" maxlength="@WuphfConstants.Limits.MaxMessageLength"></textarea>
+                            <div class="form-text">@sendRequest.Message.Length / @WuphfConstants.Limits.MaxMessageLength characters</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Channels</label>
+                            <div class="row">
+                                @foreach (var channel in Enum.GetValues<WuphfChannel>())
+                                {
+                                    <div class="col-md-6 col-lg-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   checked="@sendRequest.Channels.Contains(channel)"
+                                                   @onchange="@((args) => ToggleChannel(channel, (bool)args.Value!))"
+                                                   id="channel-@channel" />
+                                            <label class="form-check-label" for="channel-@channel">
+                                                @GetChannelIcon(channel) @channel
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="sendRequest.PrintWuphf" id="printWuphf" />
+                                <label class="form-check-label" for="printWuphf">
+                                    🖨️ Print WUPHF on nearest printer (Ryan's favorite feature!)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    <text>Sending WUPHF...</text>
+                                }
+                                else
+                                {
+                                    <text>🚀 Send WUPHF!</text>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+
+            @if (lastResponse != null)
+            {
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>📊 Delivery Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Success Rate:</strong> @lastResponse.ChannelsSuccessful / @lastResponse.ChannelsAttempted</p>
+                                <p><strong>Message ID:</strong> @lastResponse.MessageId</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Ryan's Reaction:</strong></p>
+                                <p class="text-muted fst-italic">"@lastResponse.RyanReaction"</p>
+                            </div>
+                        </div>
+
+                        @if (lastResponse.FailedChannels.Any())
+                        {
+                            <h6 class="mt-3">Failed Channels:</h6>
+                            <ul class="list-group list-group-flush">
+                                @foreach (var channel in lastResponse.FailedChannels)
+                                {
+                                    <li class="list-group-item text-danger">❌ @channel</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SendWuphfRequest sendRequest = new()
+    {
+        Channels = new List<WuphfChannel> { WuphfChannel.Facebook, WuphfChannel.Twitter, WuphfChannel.Email },
+        PrintWuphf = true
+    };
+
+    private SendWuphfResponse? lastResponse;
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isLoading = false;
+
+    private void ToggleChannel(WuphfChannel channel, bool isChecked)
+    {
+        if (isChecked && !sendRequest.Channels.Contains(channel))
+        {
+            sendRequest.Channels.Add(channel);
+        }
+        else if (!isChecked && sendRequest.Channels.Contains(channel))
+        {
+            sendRequest.Channels.Remove(channel);
+        }
+    }
+
+    private string GetChannelIcon(WuphfChannel channel) => channel switch
+    {
+        WuphfChannel.Facebook => "📘",
+        WuphfChannel.Twitter => "🐦",
+        WuphfChannel.SMS => "💬",
+        WuphfChannel.Email => "📧",
+        WuphfChannel.Chat => "💭",
+        WuphfChannel.Printer => "🖨️",
+        WuphfChannel.LinkedIn => "💼",
+        WuphfChannel.Instagram => "📸",
+        _ => "📱"
+    };
+
+    private async Task SendWuphfMessage()
+    {
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+        isLoading = true;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(sendRequest);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            // Note: In a real app, this would be configured properly
+            var response = await Http.PostAsync("https://localhost:7000/api/wuphf/send", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseJson = await response.Content.ReadAsStringAsync();
+                lastResponse = JsonSerializer.Deserialize<SendWuphfResponse>(responseJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                successMessage = $"WUPHF sent! {lastResponse?.ChannelsSuccessful}/{lastResponse?.ChannelsAttempted} channels successful.";
+
+                // Clear the form
+                sendRequest = new()
+                {
+                    Channels = new List<WuphfChannel> { WuphfChannel.Facebook, WuphfChannel.Twitter, WuphfChannel.Email },
+                    PrintWuphf = true
+                };
+            }
+            else
+            {
+                errorMessage = "Failed to send WUPHF. Ryan's servers might be down!";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error sending WUPHF: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

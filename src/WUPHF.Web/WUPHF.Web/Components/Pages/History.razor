@@ -1,0 +1,305 @@
+@page "/history"
+@using WUPHF.Shared.Models
+@using System.Text.Json
+@inject HttpClient Http
+
+<PageTitle>WUPHF History</PageTitle>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">📜 WUPHF Message History</h4>
+                    <small>All your WUPHFs in one place!</small>
+                </div>
+                <div class="card-body">
+                    @if (isLoading)
+                    {
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading WUPHF history...</p>
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+                    else if (!messages.Any())
+                    {
+                        <div class="text-center py-5">
+                            <h5>No WUPHFs found</h5>
+                            <p class="text-muted">Looks like nobody has WUPHFed yet! <a href="/send">Send the first one!</a></p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Filter by username..." @bind="searchFilter" @onkeyup="FilterMessages" />
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-primary" @onclick="LoadHistory">🔄 Refresh</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Message</th>
+                                        <th>Channels</th>
+                                        <th>Status</th>
+                                        <th>Sent At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var message in filteredMessages.Take(50))
+                                    {
+                                        <tr>
+                                            <td>@message.FromUser</td>
+                                            <td>@message.ToUser</td>
+                                            <td>
+                                                <div class="message-preview">
+                                                    @(message.Message.Length > 50 ? message.Message.Substring(0, 50) + "..." : message.Message)
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="channel-icons">
+                                                    @foreach (var channel in message.Channels)
+                                                    {
+                                                        <span class="badge me-1" title="@channel">@GetChannelIcon(channel)</span>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge @GetStatusBadgeClass(message.Status)">
+                                                    @GetStatusIcon(message.Status) @message.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small>@message.SentAt.ToString("MMM dd, yyyy HH:mm")</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" @onclick="() => ShowDetails(message)">
+                                                    👁️ Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (messages.Count > 50)
+                        {
+                            <div class="text-center mt-3">
+                                <small class="text-muted">Showing first 50 messages. Total: @messages.Count</small>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (selectedMessage != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">WUPHF Details</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDetails"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Message Info</h6>
+                            <p><strong>From:</strong> @selectedMessage.FromUser</p>
+                            <p><strong>To:</strong> @selectedMessage.ToUser</p>
+                            <p><strong>Sent:</strong> @selectedMessage.SentAt.ToString("MMM dd, yyyy HH:mm:ss")</p>
+                            <p><strong>Status:</strong> <span class="badge @GetStatusBadgeClass(selectedMessage.Status)">@selectedMessage.Status</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Message</h6>
+                            <div class="border p-2 rounded bg-light">
+                                @selectedMessage.Message
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4">Delivery Results</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Channel</th>
+                                    <th>Status</th>
+                                    <th>Error</th>
+                                    <th>External ID</th>
+                                    <th>Attempted At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var result in selectedMessage.DeliveryResults)
+                                {
+                                    <tr>
+                                        <td>@GetChannelIcon(result.Channel) @result.Channel</td>
+                                        <td>
+                                            @if (result.Success)
+                                            {
+                                                <span class="text-success">✅ Success</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger">❌ Failed</span>
+                                            }
+                                        </td>
+                                        <td class="text-danger">@(result.ErrorMessage ?? "-")</td>
+                                        <td><small>@(result.ExternalId ?? "-")</small></td>
+                                        <td><small>@result.AttemptedAt.ToString("HH:mm:ss")</small></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDetails">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<WuphfMessage> messages = new();
+    private List<WuphfMessage> filteredMessages = new();
+    private WuphfMessage? selectedMessage;
+    private string errorMessage = string.Empty;
+    private string searchFilter = string.Empty;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadHistory();
+    }
+
+    private async Task LoadHistory()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            // Note: In a real app, this would be configured properly
+            var response = await Http.GetAsync("https://localhost:7000/api/wuphf/history");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                messages = JsonSerializer.Deserialize<List<WuphfMessage>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<WuphfMessage>();
+
+                FilterMessages();
+            }
+            else
+            {
+                errorMessage = "Failed to load WUPHF history. Ryan's database might be having issues!";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading history: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void FilterMessages()
+    {
+        if (string.IsNullOrWhiteSpace(searchFilter))
+        {
+            filteredMessages = messages;
+        }
+        else
+        {
+            filteredMessages = messages.Where(m =>
+                m.FromUser.Contains(searchFilter, StringComparison.OrdinalIgnoreCase) ||
+                m.ToUser.Contains(searchFilter, StringComparison.OrdinalIgnoreCase) ||
+                m.Message.Contains(searchFilter, StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+        }
+    }
+
+    private void ShowDetails(WuphfMessage message)
+    {
+        selectedMessage = message;
+    }
+
+    private void CloseDetails()
+    {
+        selectedMessage = null;
+    }
+
+    private string GetChannelIcon(WuphfChannel channel) => channel switch
+    {
+        WuphfChannel.Facebook => "📘",
+        WuphfChannel.Twitter => "🐦",
+        WuphfChannel.SMS => "💬",
+        WuphfChannel.Email => "📧",
+        WuphfChannel.Chat => "💭",
+        WuphfChannel.Printer => "🖨️",
+        WuphfChannel.LinkedIn => "💼",
+        WuphfChannel.Instagram => "📸",
+        _ => "📱"
+    };
+
+    private string GetStatusIcon(WuphfStatus status) => status switch
+    {
+        WuphfStatus.Pending => "⏳",
+        WuphfStatus.Sending => "🚀",
+        WuphfStatus.Delivered => "✅",
+        WuphfStatus.Failed => "❌",
+        WuphfStatus.PartiallyDelivered => "⚠️",
+        _ => "❓"
+    };
+
+    private string GetStatusBadgeClass(WuphfStatus status) => status switch
+    {
+        WuphfStatus.Delivered => "bg-success",
+        WuphfStatus.Failed => "bg-danger",
+        WuphfStatus.PartiallyDelivered => "bg-warning",
+        WuphfStatus.Sending => "bg-info",
+        WuphfStatus.Pending => "bg-secondary",
+        _ => "bg-secondary"
+    };
+}
+
+<style>
+    .message-preview {
+        max-width: 200px;
+        word-wrap: break-word;
+    }
+
+    .channel-icons .badge {
+        font-size: 0.9em;
+    }
+
+    .modal.show {
+        display: block !important;
+    }
+</style>

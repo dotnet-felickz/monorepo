@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="WUPHF.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:WUPHF.Mobile"
+    Title="WUPHF Mobile">
+
+    <TabBar>
+        <ShellContent
+            Title="🏠 Home"
+            Icon="home.png"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+
+        <ShellContent
+            Title="📱 Send"
+            Icon="send.png"
+            ContentTemplate="{DataTemplate local:SendWuphfPage}"
+            Route="SendWuphf" />
+
+        <ShellContent
+            Title="📜 History"
+            Icon="history.png"
+            ContentTemplate="{DataTemplate local:HistoryPage}"
+            Route="History" />
+    </TabBar>
+
+</Shell>

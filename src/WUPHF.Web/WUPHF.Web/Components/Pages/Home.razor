@@ -1,0 +1,103 @@
+﻿@page "/"
+@using WUPHF.Shared.Constants
+
+<PageTitle>WUPHF - Home</PageTitle>
+
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <h1 class="display-2 fw-bold text-primary mb-4">🐕 WUPHF!</h1>
+        <h2 class="h3 mb-4">@WuphfConstants.Quotes.MainSlogan</h2>
+        <p class="lead mb-4">@WuphfConstants.Quotes.BusinessPlan</p>
+
+        <div class="row mt-5">
+            <div class="col-md-8 mx-auto">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">💡 Ryan Howard's Vision</h5>
+                    </div>
+                    <div class="card-body">
+                        <blockquote class="blockquote">
+                            <p class="mb-3">"@WuphfConstants.Quotes.RyanPitch"</p>
+                            <footer class="blockquote-footer">Ryan Howard, <cite title="The Office">The Office</cite></footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <a href="/send" class="btn btn-primary btn-lg me-3">
+                📱 Send a WUPHF!
+            </a>
+            <a href="/history" class="btn btn-outline-primary btn-lg">
+                📜 View History
+            </a>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🌐 All Platforms</h5>
+                        <p class="card-text">Facebook, Twitter, SMS, Email, Chat - all in one!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🖨️ Print Feature</h5>
+                        <p class="card-text">@WuphfConstants.Quotes.PrinterFeature</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">💰 Investment Opportunity</h5>
+                        <p class="card-text">The next big thing in social networking!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-section .card {
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+    }
+
+    .hero-section .btn-primary {
+        background: #ff6b6b;
+        border-color: #ff6b6b;
+        box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+
+    .hero-section .btn-primary:hover {
+        background: #ff5252;
+        border-color: #ff5252;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
+    }
+
+    .hero-section .btn-outline-primary {
+        border-color: white;
+        color: white;
+    }
+
+    .hero-section .btn-outline-primary:hover {
+        background: white;
+        border-color: white;
+        color: #667eea;
+    }
+</style>

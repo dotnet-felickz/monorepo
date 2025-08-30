@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <Product>WUPHF - The Ultimate Social Networking Experience</Product>
+    <Company>Ryan Howard Enterprises</Company>
+    <Copyright>Copyright © Ryan Howard Enterprises</Copyright>
+    <Version>1.0.0-ryan-approved</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Description>WUPHF! Facebook, Twitter, SMS, Email, Chat, and even prints to the nearest printer!</Description>
+    <PackageProjectUrl>https://github.com/your-repo/wuphf</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/your-repo/wuphf</RepositoryUrl>
+    <PackageTags>wuphf;the-office;ryan-howard;social-networking;dotnet</PackageTags>
+
+    <!-- Build settings -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors />
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Ryan's favorite quote as a build property -->
+    <RyanQuote>I'm going to own the biggest social networking site in the world!</RyanQuote>
+  </PropertyGroup>
+
+  <!-- Removed global PackageReference for Microsoft.Extensions.Logging to avoid version conflicts
+       with MAUI (requires >= 9.x) and duplicate references across projects. -->
+
+  <!-- Build message from Ryan -->
+  <Target Name="ShowRyanMessage" BeforeTargets="Build">
+    <Message Text="🐕 WUPHF BUILD: $(RyanQuote)" Importance="high" />
+  </Target>
+</Project>

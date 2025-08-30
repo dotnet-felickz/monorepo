@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WUPHF.Mobile.MainPage"
+             Title="WUPHF Mobile">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,20"
+            Spacing="25">
+
+            <!-- WUPHF Header -->
+            <Frame BackgroundColor="#667eea"
+                   CornerRadius="15"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="🐕 WUPHF!"
+                        FontSize="36"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="The ultimate social networking experience!"
+                        FontSize="16"
+                        TextColor="White"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <VerticalStackLayout Spacing="15">
+                <Button
+                    x:Name="SendWuphfBtn"
+                    Text="📱 Send a WUPHF!"
+                    FontSize="18"
+                    BackgroundColor="#ff6b6b"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    Clicked="OnSendWuphfClicked"
+                    HorizontalOptions="Fill" />
+
+                <Button
+                    x:Name="HistoryBtn"
+                    Text="📜 View History"
+                    FontSize="16"
+                    BackgroundColor="#4ecdc4"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Clicked="OnHistoryClicked"
+                    HorizontalOptions="Fill" />
+
+                <Button
+                    x:Name="AboutBtn"
+                    Text="💡 About Ryan"
+                    FontSize="16"
+                    BackgroundColor="#45b7d1"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Clicked="OnAboutClicked"
+                    HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+
+            <!-- Features -->
+            <Frame BackgroundColor="LightGray"
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="🌟 WUPHF Features"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="• Send to Facebook, Twitter, SMS, Email"
+                        FontSize="14" />
+                    <Label
+                        Text="• Instant chat notifications"
+                        FontSize="14" />
+                    <Label
+                        Text="• Print WUPHFs on nearest printer"
+                        FontSize="14" />
+                    <Label
+                        Text="• LinkedIn and Instagram integration"
+                        FontSize="14" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Ryan's Quote -->
+            <Frame BackgroundColor="#f8f9fa"
+                   CornerRadius="10"
+                   Padding="15"
+                   BorderColor="#dee2e6">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        Text="💭 Ryan Howard Says:"
+                        FontSize="16"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        Text="&quot;Imagine you're in an accident and you need to contact someone. Instead of being like 'Help me,' you'd be like 'WUPHF me!'&quot;"
+                        FontSize="14"
+                        FontAttributes="Italic"
+                        TextColor="DarkSlateGray" />
+
+                    <Label
+                        Text="- Ryan Howard, The Office"
+                        FontSize="12"
+                        TextColor="Gray"
+                        HorizontalOptions="End" />
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WUPHF.Mobile.SendWuphfPage"
+             Title="Send WUPHF">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Header -->
+            <Frame BackgroundColor="#ff6b6b"
+                   CornerRadius="15"
+                   Padding="15"
+                   HasShadow="True">
+                <Label
+                    Text="📱 Send a WUPHF!"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+            </Frame>
+
+            <!-- Form -->
+            <VerticalStackLayout Spacing="15">
+
+                <!-- From User -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="From (Your Name)" FontSize="16" FontAttributes="Bold" />
+                    <Entry x:Name="FromUserEntry"
+                           Placeholder="Enter your name"
+                           BackgroundColor="LightGray"
+                           PlaceholderColor="Gray" />
+                </VerticalStackLayout>
+
+                <!-- To User -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="To (Recipient)" FontSize="16" FontAttributes="Bold" />
+                    <Entry x:Name="ToUserEntry"
+                           Placeholder="Enter recipient's name"
+                           BackgroundColor="LightGray"
+                           PlaceholderColor="Gray" />
+                </VerticalStackLayout>
+
+                <!-- Message -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Message" FontSize="16" FontAttributes="Bold" />
+                    <Editor x:Name="MessageEditor"
+                            Placeholder="What do you want to WUPHF about?"
+                            HeightRequest="100"
+                            BackgroundColor="LightGray"
+                            PlaceholderColor="Gray"
+                            TextChanged="OnMessageTextChanged" />
+                    <Label x:Name="CharCountLabel"
+                           Text="0 / 280 characters"
+                           FontSize="12"
+                           TextColor="Gray"
+                           HorizontalOptions="End" />
+                </VerticalStackLayout>
+
+                <!-- Channels -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Select Channels" FontSize="16" FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*" ColumnSpacing="10" RowSpacing="5">
+                        <CheckBox x:Name="FacebookCheck" Grid.Row="0" Grid.Column="0" IsChecked="True" />
+                        <Label Text="📘 Facebook" Grid.Row="0" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="TwitterCheck" Grid.Row="0" Grid.Column="1" IsChecked="True" />
+                        <Label Text="🐦 Twitter" Grid.Row="0" Grid.Column="1" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="SMSCheck" Grid.Row="1" Grid.Column="0" />
+                        <Label Text="💬 SMS" Grid.Row="1" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="EmailCheck" Grid.Row="1" Grid.Column="1" IsChecked="True" />
+                        <Label Text="📧 Email" Grid.Row="1" Grid.Column="1" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="ChatCheck" Grid.Row="2" Grid.Column="0" />
+                        <Label Text="💭 Chat" Grid.Row="2" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="PrinterCheck" Grid.Row="2" Grid.Column="1" IsChecked="True" />
+                        <Label Text="🖨️ Printer" Grid.Row="2" Grid.Column="1" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="LinkedInCheck" Grid.Row="3" Grid.Column="0" />
+                        <Label Text="💼 LinkedIn" Grid.Row="3" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="InstagramCheck" Grid.Row="3" Grid.Column="1" />
+                        <Label Text="📸 Instagram" Grid.Row="3" Grid.Column="1" Margin="30,0,0,0" VerticalOptions="Center" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Send Button -->
+                <Button
+                    x:Name="SendButton"
+                    Text="🚀 Send WUPHF!"
+                    FontSize="18"
+                    BackgroundColor="#ff6b6b"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    Clicked="OnSendClicked"
+                    HorizontalOptions="Fill" />
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsVisible="False"
+                                   IsRunning="False"
+                                   Color="#ff6b6b" />
+
+                <!-- Status Message -->
+                <Label x:Name="StatusLabel"
+                       Text=""
+                       FontSize="14"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="False" />
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

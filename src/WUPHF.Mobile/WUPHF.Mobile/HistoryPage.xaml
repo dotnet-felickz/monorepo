@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WUPHF.Mobile.HistoryPage"
+             Title="WUPHF History">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Frame Grid.Row="0"
+               BackgroundColor="#4ecdc4"
+               CornerRadius="0,0,15,15"
+               Padding="20,30,20,20"
+               HasShadow="True">
+            <VerticalStackLayout Spacing="5">
+                <Label
+                    Text="📜 WUPHF History"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+                <Label
+                    Text="All your WUPHFs in one place!"
+                    FontSize="14"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1" Padding="20">
+            <VerticalStackLayout Spacing="15">
+
+                <!-- Refresh Button -->
+                <Button
+                    x:Name="RefreshButton"
+                    Text="🔄 Refresh History"
+                    FontSize="16"
+                    BackgroundColor="#4ecdc4"
+                    TextColor="White"
+                    CornerRadius="20"
+                    HeightRequest="45"
+                    Clicked="OnRefreshClicked"
+                    HorizontalOptions="Fill" />
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                   IsVisible="False"
+                                   IsRunning="False"
+                                   Color="#4ecdc4" />
+
+                <!-- Messages List -->
+                <CollectionView x:Name="MessagesCollectionView"
+                                ItemsSource="{Binding Messages}"
+                                IsVisible="False">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="0,5">
+                                <Frame BackgroundColor="White"
+                                       BorderColor="LightGray"
+                                       CornerRadius="10"
+                                       Padding="15"
+                                       HasShadow="True">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding FromUser, StringFormat='From: {0}'}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="16" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding SentAt, StringFormat='{0:MMM dd, HH:mm}'}"
+                                                   FontSize="12"
+                                                   TextColor="Gray" />
+                                        </Grid>
+
+                                        <Label Text="{Binding ToUser, StringFormat='To: {0}'}"
+                                               FontSize="14"
+                                               TextColor="DarkGray" />
+
+                                        <Label Text="{Binding Message}"
+                                               FontSize="14"
+                                               LineBreakMode="WordWrap" />
+
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Channels.Count, StringFormat='{0} channels'}"
+                                                   FontSize="12"
+                                                   TextColor="Gray" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Status}"
+                                                   FontSize="12"
+                                                   TextColor="{Binding StatusColor}"
+                                                   FontAttributes="Bold" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Empty State -->
+                <VerticalStackLayout x:Name="EmptyStateView"
+                                     Spacing="20"
+                                     IsVisible="True"
+                                     VerticalOptions="CenterAndExpand">
+                    <Label
+                        Text="🐕"
+                        FontSize="60"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="No WUPHFs found!"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Looks like nobody has WUPHFed yet!"
+                        FontSize="16"
+                        TextColor="Gray"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center" />
+                    <Button
+                        Text="📱 Send Your First WUPHF!"
+                        FontSize="16"
+                        BackgroundColor="#ff6b6b"
+                        TextColor="White"
+                        CornerRadius="20"
+                        HeightRequest="45"
+                        Clicked="OnSendFirstWuphfClicked"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Error State -->
+                <VerticalStackLayout x:Name="ErrorStateView"
+                                     Spacing="15"
+                                     IsVisible="False"
+                                     VerticalOptions="CenterAndExpand">
+                    <Label
+                        Text="❌"
+                        FontSize="60"
+                        HorizontalOptions="Center" />
+                    <Label
+                        x:Name="ErrorLabel"
+                        Text="Error loading history"
+                        FontSize="16"
+                        TextColor="Red"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
