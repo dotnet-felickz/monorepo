@@ -54,11 +54,10 @@ jobs:
         #       - src/WUPHF.Shared
 
     - if: matrix.language == 'csharp'
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.x'
         include-prerelease: true
-
 
     - if: matrix.build-mode == 'manual'
       name: "Restore and Build ${{ matrix.project }} and Dependencies"
