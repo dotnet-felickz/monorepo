@@ -59,6 +59,10 @@ jobs:
         dotnet-version: '10.x'
         include-prerelease: true
 
+    - if: matrix.project == 'WUPHF.Mobile'
+      name: "Check and restore MAUI workload if needed"
+      run: dotnet workload list | grep -q "maui" || dotnet workload restore src/WUPHF.Mobile/WUPHF.Mobile.csproj
+
     - if: matrix.build-mode == 'manual'
       name: "Restore and Build ${{ matrix.project }} and Dependencies"
       shell: bash
