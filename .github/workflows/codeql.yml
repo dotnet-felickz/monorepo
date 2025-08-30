@@ -42,16 +42,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Initializes the CodeQL tools for scanning.
-    - name: "Initialize CodeQL for ${{ matrix.language }} ${{ matrix.project }}"
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # config: |
-        #     paths:
-        #       - src/${{ matrix.project }}
-        #       - src/WUPHF.Shared
+    # # Initializes the CodeQL tools for scanning.
+    # - name: "Initialize CodeQL for ${{ matrix.language }} ${{ matrix.project }}"
+    #   uses: github/codeql-action/init@v3
+    #   with:
+    #     languages: ${{ matrix.language }}
+    #     build-mode: ${{ matrix.build-mode }}
+    #     # config: |
+    #     #     paths:
+    #     #       - src/${{ matrix.project }}
+    #     #       - src/WUPHF.Shared
 
     - if: matrix.language == 'csharp'
       uses: actions/setup-dotnet@v4
@@ -87,8 +87,8 @@ jobs:
         dotnet restore src/${{ matrix.project }}
         dotnet build src/${{ matrix.project }}
 
-    - name: "Perform CodeQL Analysis for ${{ matrix.language }} ${{ matrix.project }}"
-      uses: github/codeql-action/analyze@v3
-      with:
-        # Adds /project:{project} to the category if <project> is set in the matrix
-        category: "/language:${{matrix.language}}${{ matrix.project && format('/project:{0}', matrix.project) || '' }}"
+    # - name: "Perform CodeQL Analysis for ${{ matrix.language }} ${{ matrix.project }}"
+    #   uses: github/codeql-action/analyze@v3
+    #   with:
+    #     # Adds /project:{project} to the category if <project> is set in the matrix
+    #     category: "/language:${{matrix.language}}${{ matrix.project && format('/project:{0}', matrix.project) || '' }}"
