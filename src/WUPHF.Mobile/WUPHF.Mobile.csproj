@@ -67,7 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\WUPHF.Shared\WUPHF.Shared\WUPHF.Shared.csproj" />
+	  <ProjectReference Include="..\..\src\WUPHF.Shared\WUPHF.Shared.csproj" />
 	</ItemGroup>
 
 </Project>
