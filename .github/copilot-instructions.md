@@ -70,21 +70,46 @@ dotnet run --framework net9.0-android              # For Android (requires SDK s
 1. **API Health Check:**
    - Navigate to `http://localhost:5043/api/wuphf/health`
    - Should return JSON with "Status": "WUPHF is alive and kicking!"
+   - Check OpenAPI docs: `http://localhost:5043/openapi/v1.json`
 
 2. **Complete WUPHF Flow (Critical):**
    - Start API first, then Web app
    - Navigate to `https://localhost:7277/send`
-   - Fill out form: From="Test User", To="Ryan Howard", Message="Test WUPHF!"
+   - Fill out form: From="Test User", To="Ryan Howard", Message="Test WUPHF message!"
    - Select multiple channels (Facebook, Twitter, SMS, Email, Printer)
    - Click "Send WUPHF!"
-   - Should show success message with channel count
-   - Navigate to `https://localhost:7277/history` to verify message appears
+   - Should show success message: "WUPHF sent! X/Y channels successful!"
+   - Should display Ryan's reaction based on success rate
+   - Navigate to `https://localhost:7277/history` to verify message appears with timestamp
 
-3. **Mobile App Testing (if running):**
-   - Launch mobile app
-   - Navigate to "Send WUPHF" page
-   - Send a test message through multiple channels
-   - Verify message appears in history
+3. **API Direct Testing:**
+   - Use the provided HTTP file: `src/WUPHF.Api/WUPHF.Api.http`
+   - Test POST to `/api/wuphf/send` with sample JSON:
+     ```json
+     {
+       "fromUser": "Test User",
+       "toUser": "Ryan Howard", 
+       "message": "Test message",
+       "channels": [0, 1, 2, 3, 5],
+       "printWuphf": true
+     }
+     ```
+   - Verify response includes messageId and channel counts
+
+4. **Mobile App Testing (if running):**
+   - Launch mobile app (displays 🐕 WUPHF! header)
+   - Navigate to "Send WUPHF" page via navigation
+   - Fill form: From, To, Message (max 280 characters)
+   - Select multiple channels using checkboxes
+   - Tap "Send WUPHF!" button
+   - Should show success dialog with Ryan's reaction
+   - Check "History" page to verify message appears
+
+5. **Error Validation:**
+   - Test empty message (should show validation error)
+   - Test message > 280 characters (should show length error)
+   - Test with no channels selected (should show channel error)
+   - Stop API and test Web/Mobile apps (should show connection errors)
 
 ## Project Structure and Key Locations
 
@@ -112,6 +137,15 @@ WUPHF.sln - Main solution file
 - `GET /api/wuphf/quotes` - Get Ryan Howard quotes
 - `GET /api/wuphf/health` - Health check
 
+### WUPHF Channels (0-7)
+- 0: Facebook, 1: Twitter, 2: SMS, 3: Email
+- 4: Chat, 5: Printer (Ryan's favorite!), 6: LinkedIn, 7: Instagram
+
+### Important Constants
+- Max message length: 280 characters (Twitter-like limit)
+- Max channels per message: 8
+- Default printer feature: Always enabled ("PrintWuphf": true)
+
 ## Build Timing and Expectations
 
 ### Expected Command Times
@@ -137,25 +171,37 @@ WUPHF.sln - Main solution file
    ```
 
 2. **For API changes:**
-   - Restart the API service
-   - Test endpoints using browser or `curl`
-   - Verify OpenAPI documentation updates
+   - Restart the API service (Ctrl+C, then `dotnet run`)
+   - Test endpoints using browser, HTTP file, or `curl`
+   - Verify OpenAPI documentation updates automatically
+   - Check logs in console for any errors
 
 3. **For Web UI changes:**
-   - Restart the Web app
+   - Restart the Web app (Ctrl+C, then `dotnet run`)
    - Test in browser with full user scenarios
-   - Verify mobile responsiveness
+   - Verify mobile responsiveness (resize browser)
+   - Test all navigation links work
 
 4. **For Mobile changes:**
    - Rebuild and redeploy to target platform
    - Test on actual device when possible
+   - Verify UI scaling on different screen sizes
+
+5. **For Shared library changes:**
+   - Rebuild entire solution (affects all projects)
+   - Restart both API and Web applications
+   - Verify model/DTO changes work across all applications
 
 ### Common Issues and Solutions
-- **Build fails with .NET version error:** Ensure .NET 10 SDK is installed
+- **Build fails with .NET version error:** Ensure .NET 10 SDK is installed (`dotnet --version`)
 - **MAUI workload missing:** Run `dotnet workload install maui`
 - **Android build fails:** Verify `ANDROID_SDK_ROOT` and `JAVA_HOME` are set
 - **API connection errors:** Ensure API is running before starting Web/Mobile apps
 - **CORS errors:** API includes permissive CORS policy for development
+- **Port conflicts:** Kill existing processes on ports 5043, 7254, 5047, 7277
+- **"WUPHF not found" errors:** Check API is running and URLs are correct
+- **Mobile app won't start:** Verify target framework exists for your platform
+- **OpenAPI docs not loading:** Check API is running on HTTP (not just HTTPS)
 
 ## No Testing Infrastructure
 - This repository does not include automated tests
@@ -188,7 +234,9 @@ cd src/WUPHF.Mobile/WUPHF.Mobile && dotnet run --framework net9.0-windows10.0.19
 
 ### Verification URLs
 - API Health: http://localhost:5043/api/wuphf/health
+- API Root: http://localhost:5043/ (shows welcome message)
 - Web App: https://localhost:7277
 - OpenAPI Docs: http://localhost:5043/openapi/v1.json
+- API Test File: Use `src/WUPHF.Api/WUPHF.Api.http` in VS Code/Visual Studio
 
 Remember: "I thought I was going to be rich. I mean, I still might be." - Ryan Howard
