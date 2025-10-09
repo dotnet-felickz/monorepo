@@ -87,7 +87,7 @@ jobs:
       shell: bash
       run: |
         dotnet restore src/${{ matrix.project }}
-        dotnet build src/${{ matrix.project }} -v debug -tl:off
+        dotnet build src/${{ matrix.project }} -v minimal -tl:off
 
     - name: "Perform CodeQL Analysis for ${{ matrix.language }} ${{ matrix.project }}"
       uses: github/codeql-action/analyze@v3
