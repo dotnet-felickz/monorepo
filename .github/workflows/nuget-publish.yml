@@ -23,9 +23,6 @@ jobs:
           dotnet-version: |
             10.x
             9.0.x
-            8.0.x
-            6.0.x
-            3.1.x
 
       - name: Restore dependencies
         run: dotnet restore src/WUPHF.Shared/WUPHF.Shared.csproj
