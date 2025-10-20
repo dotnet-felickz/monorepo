@@ -4,6 +4,15 @@
     <TargetFrameworks>net10.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
+    <!-- NuGet Package Properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>WUPHF.Shared</PackageId>
+    <Authors>Ryan Howard Enterprises</Authors>
+    <RepositoryUrl>https://github.com/dotnet-felickz/monorepo</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/dotnet-felickz/monorepo</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
 </Project>
