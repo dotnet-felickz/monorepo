@@ -1,4 +1,6 @@
 using WUPHF.Shared.Models;
+using WUPHF.Shared.ViewModels;
+using WUPHF.Shared.Helpers;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
@@ -9,7 +11,7 @@ public partial class HistoryPage : ContentPage
     private readonly HttpClient _httpClient;
     private const string API_BASE_URL = "https://localhost:7000/api/wuphf";
 
-    public ObservableCollection<WuphfMessageViewModel> Messages { get; set; } = new();
+    public ObservableCollection<MobileWuphfMessageViewModel> Messages { get; set; } = new();
 
     public HistoryPage()
     {
@@ -59,7 +61,10 @@ public partial class HistoryPage : ContentPage
                 Messages.Clear();
                 foreach (var message in messages.Take(50)) // Limit for mobile performance
                 {
-                    Messages.Add(new WuphfMessageViewModel(message));
+                    var viewModel = new WuphfMessageViewModel(message);
+                    // Convert hex color to MAUI Color for binding
+                    var statusColor = Color.FromArgb(viewModel.StatusColorHex);
+                    Messages.Add(new MobileWuphfMessageViewModel(viewModel, statusColor));
                 }
 
                 if (Messages.Any())
@@ -98,36 +103,18 @@ public partial class HistoryPage : ContentPage
     }
 }
 
-// ViewModel class for easier data binding in mobile
-public class WuphfMessageViewModel
+/// <summary>
+/// Mobile-specific view model that extends the shared view model with MAUI Color support
+/// </summary>
+public class MobileWuphfMessageViewModel : WuphfMessageViewModel
 {
-    public WuphfMessageViewModel(WuphfMessage message)
+    public MobileWuphfMessageViewModel(WuphfMessageViewModel baseViewModel, Color statusColor) 
+        : base(baseViewModel.Id, baseViewModel.FromUser, baseViewModel.ToUser, 
+               baseViewModel.FullMessage, baseViewModel.SentAt, baseViewModel.StatusEnum,
+               baseViewModel.Channels, baseViewModel.DeliveryResults)
     {
-        Id = message.Id;
-        FromUser = message.FromUser;
-        ToUser = message.ToUser;
-        Message = message.Message.Length > 100 ? message.Message.Substring(0, 100) + "..." : message.Message;
-        SentAt = message.SentAt;
-        Status = message.Status.ToString();
-        Channels = message.Channels;
-
-        StatusColor = message.Status switch
-        {
-            WuphfStatus.Delivered => Colors.Green,
-            WuphfStatus.Failed => Colors.Red,
-            WuphfStatus.PartiallyDelivered => Colors.Orange,
-            WuphfStatus.Sending => Colors.Blue,
-            WuphfStatus.Pending => Colors.Gray,
-            _ => Colors.Gray
-        };
+        StatusColor = statusColor;
     }
 
-    public Guid Id { get; set; }
-    public string FromUser { get; set; }
-    public string ToUser { get; set; }
-    public string Message { get; set; }
-    public DateTime SentAt { get; set; }
-    public string Status { get; set; }
-    public List<WuphfChannel> Channels { get; set; }
     public Color StatusColor { get; set; }
 }

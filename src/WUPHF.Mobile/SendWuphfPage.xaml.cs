@@ -1,5 +1,7 @@
 using WUPHF.Shared.Models;
 using WUPHF.Shared.DTOs;
+using WUPHF.Shared.Helpers;
+using WUPHF.Shared.Constants;
 using System.Text.Json;
 using System.Text;
 
@@ -25,9 +27,9 @@ public partial class SendWuphfPage : ContentPage
     private void UpdateCharCount()
     {
         var messageLength = MessageEditor.Text?.Length ?? 0;
-        CharCountLabel.Text = $"{messageLength} / 280 characters";
+        CharCountLabel.Text = $"{messageLength} / {WuphfConstants.Limits.MaxMessageLength} characters";
 
-        if (messageLength > 280)
+        if (messageLength > WuphfConstants.Limits.MaxMessageLength)
         {
             CharCountLabel.TextColor = Colors.Red;
         }
@@ -62,9 +64,9 @@ public partial class SendWuphfPage : ContentPage
             return;
         }
 
-        if (MessageEditor.Text.Length > 280)
+        if (MessageEditor.Text.Length > WuphfConstants.Limits.MaxMessageLength)
         {
-            await DisplayAlert("Error", "Message is too long! Maximum 280 characters.", "OK");
+            await DisplayAlert("Error", $"Message is too long! Maximum {WuphfConstants.Limits.MaxMessageLength} characters.", "OK");
             return;
         }
 

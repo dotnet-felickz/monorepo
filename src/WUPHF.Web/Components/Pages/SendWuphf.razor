@@ -2,6 +2,7 @@
 @using WUPHF.Shared.Models
 @using WUPHF.Shared.DTOs
 @using WUPHF.Shared.Constants
+@using WUPHF.Shared.Helpers
 @using System.Text.Json
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
@@ -157,18 +158,7 @@
         }
     }
 
-    private string GetChannelIcon(WuphfChannel channel) => channel switch
-    {
-        WuphfChannel.Facebook => "📘",
-        WuphfChannel.Twitter => "🐦",
-        WuphfChannel.SMS => "💬",
-        WuphfChannel.Email => "📧",
-        WuphfChannel.Chat => "💭",
-        WuphfChannel.Printer => "🖨️",
-        WuphfChannel.LinkedIn => "💼",
-        WuphfChannel.Instagram => "📸",
-        _ => "📱"
-    };
+    private string GetChannelIcon(WuphfChannel channel) => WuphfUIHelper.GetChannelIcon(channel);
 
     private async Task SendWuphfMessage()
     {

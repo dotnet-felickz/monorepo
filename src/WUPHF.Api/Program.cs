@@ -1,4 +1,5 @@
 using WUPHF.Api.Services;
+using WUPHF.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddOpenApi();
 // Register WUPHF services
 builder.Services.AddScoped<IWuphfService, WuphfService>();
 builder.Services.AddScoped<IChannelService, ChannelService>();
+builder.Services.AddScoped<IWuphfValidationService, WuphfValidationService>();
 
 // Add CORS for web frontend
 builder.Services.AddCors(options =>
