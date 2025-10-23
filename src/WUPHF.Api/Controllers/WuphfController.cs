@@ -3,6 +3,7 @@ using WUPHF.Api.Services;
 using WUPHF.Shared.DTOs;
 using WUPHF.Shared.Models;
 using WUPHF.Shared.Constants;
+using WUPHF.Shared.Services;
 
 namespace WUPHF.Api.Controllers;
 
@@ -15,11 +16,13 @@ namespace WUPHF.Api.Controllers;
 public class WuphfController : ControllerBase
 {
     private readonly IWuphfService _wuphfService;
+    private readonly IWuphfValidationService _validationService;
     private readonly ILogger<WuphfController> _logger;
 
-    public WuphfController(IWuphfService wuphfService, ILogger<WuphfController> logger)
+    public WuphfController(IWuphfService wuphfService, IWuphfValidationService validationService, ILogger<WuphfController> logger)
     {
         _wuphfService = wuphfService;
+        _validationService = validationService;
         _logger = logger;
     }
 
@@ -35,31 +38,14 @@ public class WuphfController : ControllerBase
             _logger.LogInformation("WUPHF! Received request to send message from {FromUser} to {ToUser}",
                 request.FromUser, request.ToUser);
 
-            // Validate request
-            if (string.IsNullOrWhiteSpace(request.Message))
+            // Validate request using shared validation service
+            var validationResult = _validationService.ValidateMessage(request.Message, request.Channels);
+            if (!validationResult.IsValid)
             {
                 return BadRequest(new SendWuphfResponse
                 {
                     Success = false,
-                    ErrorMessage = "Message cannot be empty! Ryan says: 'You can't WUPHF nothing!'"
-                });
-            }
-
-            if (request.Message.Length > WuphfConstants.Limits.MaxMessageLength)
-            {
-                return BadRequest(new SendWuphfResponse
-                {
-                    Success = false,
-                    ErrorMessage = $"Message too long! Max length is {WuphfConstants.Limits.MaxMessageLength} characters."
-                });
-            }
-
-            if (!request.Channels.Any())
-            {
-                return BadRequest(new SendWuphfResponse
-                {
-                    Success = false,
-                    ErrorMessage = "No channels selected! The whole point of WUPHF is to send everywhere!"
+                    ErrorMessage = validationResult.ErrorMessage
                 });
             }
 

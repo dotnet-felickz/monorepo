@@ -1,5 +1,6 @@
 @page "/history"
 @using WUPHF.Shared.Models
+@using WUPHF.Shared.Helpers
 @using System.Text.Json
 @inject HttpClient Http
 
@@ -255,38 +256,11 @@
         selectedMessage = null;
     }
 
-    private string GetChannelIcon(WuphfChannel channel) => channel switch
-    {
-        WuphfChannel.Facebook => "📘",
-        WuphfChannel.Twitter => "🐦",
-        WuphfChannel.SMS => "💬",
-        WuphfChannel.Email => "📧",
-        WuphfChannel.Chat => "💭",
-        WuphfChannel.Printer => "🖨️",
-        WuphfChannel.LinkedIn => "💼",
-        WuphfChannel.Instagram => "📸",
-        _ => "📱"
-    };
+    private string GetChannelIcon(WuphfChannel channel) => WuphfUIHelper.GetChannelIcon(channel);
 
-    private string GetStatusIcon(WuphfStatus status) => status switch
-    {
-        WuphfStatus.Pending => "⏳",
-        WuphfStatus.Sending => "🚀",
-        WuphfStatus.Delivered => "✅",
-        WuphfStatus.Failed => "❌",
-        WuphfStatus.PartiallyDelivered => "⚠️",
-        _ => "❓"
-    };
+    private string GetStatusIcon(WuphfStatus status) => WuphfUIHelper.GetStatusIcon(status);
 
-    private string GetStatusBadgeClass(WuphfStatus status) => status switch
-    {
-        WuphfStatus.Delivered => "bg-success",
-        WuphfStatus.Failed => "bg-danger",
-        WuphfStatus.PartiallyDelivered => "bg-warning",
-        WuphfStatus.Sending => "bg-info",
-        WuphfStatus.Pending => "bg-secondary",
-        _ => "bg-secondary"
-    };
+    private string GetStatusBadgeClass(WuphfStatus status) => WuphfUIHelper.GetStatusBadgeClass(status);
 }
 
 <style>
