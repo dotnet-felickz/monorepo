@@ -230,7 +230,7 @@ See TESTING_GUIDE.md for comprehensive manual testing scenarios.
 2. **Add More Validation**
    - Email format validation
    - Phone number validation
-   - User name validation
+   - Username validation
    - Move to Shared service
 
 3. **Add Unit Tests**
