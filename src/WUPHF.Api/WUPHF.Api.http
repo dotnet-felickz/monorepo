@@ -34,7 +34,7 @@ Accept: application/json
 # VULNERABLE ENDPOINT: Read template file (demonstrates path traversal vulnerability)
 # This endpoint is intentionally vulnerable for security testing purposes
 # Example of safe usage:
-GET {{WUPHF.Api_HostAddress}}/api/wuphf/template?path=template.txt
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/template?path=templates/birthday.txt
 Accept: application/json
 
 ###

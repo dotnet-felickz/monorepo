@@ -185,7 +185,9 @@ public class WuphfController : ControllerBase
     /// <summary>
     /// Read WUPHF template files for customized messages
     /// "We need templates for every occasion!" - Ryan Howard
+    /// ⚠️ WARNING: This endpoint contains an INTENTIONAL path traversal vulnerability for educational purposes!
     /// </summary>
+    /// <param name="path">File path - VULNERABLE: Accepts any path without validation, demonstrating CWE-22</param>
     [HttpGet("template")]
     public ActionResult<object> GetTemplate([FromQuery] string path)
     {
@@ -193,8 +195,11 @@ public class WuphfController : ControllerBase
         {
             _logger.LogInformation("Reading WUPHF template from path: {Path}", path);
 
-            // BAD: This could read any file on the filesystem.
-            // No validation of the path parameter allows path traversal attacks
+            // ⚠️ SECURITY VULNERABILITY: Path Traversal (CWE-22)
+            // BAD: This accepts user input directly and reads any file on the filesystem.
+            // The 'path' parameter has NO validation, allowing path traversal attacks.
+            // An attacker can read /etc/passwd, appsettings.json, or any accessible file.
+            // See SECURITY_VULNERABILITY_REPORT.md for details and proper fix.
             string templateContent = System.IO.File.ReadAllText(path);
 
             return Ok(new
