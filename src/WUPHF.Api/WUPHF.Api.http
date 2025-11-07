@@ -4,3 +4,51 @@ GET {{WUPHF.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Health check endpoint
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/health
+Accept: application/json
+
+###
+
+# Send a WUPHF message
+POST {{WUPHF.Api_HostAddress}}/api/wuphf/send
+Content-Type: application/json
+
+{
+  "fromUser": "Michael Scott",
+  "toUser": "Ryan Howard",
+  "message": "WUPHF! This is going to be huge!",
+  "channels": [0, 1, 2, 3, 5],
+  "printWuphf": true
+}
+
+###
+
+# Get WUPHF quotes
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/quotes
+Accept: application/json
+
+###
+
+# VULNERABLE ENDPOINT: Read template file (demonstrates path traversal vulnerability)
+# This endpoint is intentionally vulnerable for security testing purposes
+# Example of safe usage:
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/template?path=template.txt
+Accept: application/json
+
+###
+
+# SECURITY TEST: Path traversal attempt (reads /etc/passwd on Linux)
+# This demonstrates the vulnerability - DO NOT use in production!
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/template?path=/etc/passwd
+Accept: application/json
+
+###
+
+# SECURITY TEST: Path traversal attempt (Windows example)
+# This demonstrates the vulnerability - DO NOT use in production!
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/template?path=C:\Windows\System32\drivers\etc\hosts
+Accept: application/json
+
+###

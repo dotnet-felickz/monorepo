@@ -181,4 +181,47 @@ public class WuphfController : ControllerBase
             Version = "1.0.0-ryan-approved"
         });
     }
+
+    /// <summary>
+    /// Read WUPHF template files for customized messages
+    /// "We need templates for every occasion!" - Ryan Howard
+    /// </summary>
+    [HttpGet("template")]
+    public ActionResult<object> GetTemplate([FromQuery] string path)
+    {
+        try
+        {
+            _logger.LogInformation("Reading WUPHF template from path: {Path}", path);
+
+            // BAD: This could read any file on the filesystem.
+            // No validation of the path parameter allows path traversal attacks
+            string templateContent = System.IO.File.ReadAllText(path);
+
+            return Ok(new
+            {
+                TemplatePath = path,
+                Content = templateContent,
+                Message = "Template loaded! Ready to WUPHF!",
+                RyanQuote = "This is going to revolutionize the template industry!"
+            });
+        }
+        catch (FileNotFoundException)
+        {
+            _logger.LogWarning("Template file not found: {Path}", path);
+            return NotFound(new
+            {
+                Error = "Template not found",
+                Message = "Ryan says: 'That template doesn't exist... yet!'"
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reading template from {Path}", path);
+            return StatusCode(500, new
+            {
+                Error = "Template read failed",
+                Message = "Something went wrong. Ryan's template system is down."
+            });
+        }
+    }
 }
