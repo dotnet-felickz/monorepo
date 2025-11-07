@@ -4,3 +4,31 @@ GET {{WUPHF.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# WUPHF API Tests
+
+### Health Check
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/health
+Accept: application/json
+
+###
+
+### Export Employee - Normal Input
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/export-employee?employeeName=Ryan Howard
+Accept: application/xml
+
+###
+
+### Export Employee - XML Injection Attack (demonstrates vulnerability)
+# This will inject additional XML elements due to the vulnerability
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/export-employee?employeeName=Ryan</name><salary>1000000</salary><name>Howard
+Accept: application/xml
+
+###
+
+### Export Employee - Tag Injection Attack
+# This demonstrates how an attacker can close tags and inject new structure
+GET {{WUPHF.Api_HostAddress}}/api/wuphf/export-employee?employeeName=Ryan</name></employee><employee><name>Attacker</name><admin>true</admin></employee><employee><name>Howard
+Accept: application/xml
+
+###
