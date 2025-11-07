@@ -34,27 +34,32 @@ jobs:
           dotnet-version: '10.x'
 
       - name: "Restore MAUI workloads"
-        shell: pwsh
+        shell: bash
         run: |
           dotnet workload restore src/WUPHF.Mobile/WUPHF.Mobile.csproj
   
-          if (-not (dotnet workload list | Select-String "maui-android")) {
+          if ! dotnet workload list | grep -q "maui-android"; then
               dotnet workload install maui-android --skip-manifest-update
-          }
-          if (-not (dotnet workload list | Select-String "maui-ios")) {
+          fi
+          if ! dotnet workload list | grep -q "maui-ios"; then
               dotnet workload install maui-ios --skip-manifest-update
-          }
-          if (-not (dotnet workload list | Select-String "maui-maccatalyst")) {
+          fi
+          if ! dotnet workload list | grep -q "maui-maccatalyst"; then
               dotnet workload install maui-maccatalyst --skip-manifest-update
-          }
-          if (-not (dotnet workload list | Select-String "maui-windows")) {
+          fi
+          if ! dotnet workload list | grep -q "maui-windows"; then
               dotnet workload install maui-windows --skip-manifest-update
-          }
-          if (-not (dotnet workload list | Select-String "maui-tizen ")) {
-              dotnet workload install maui-tizen  --skip-manifest-update
-          }
+          fi
+          if ! dotnet workload list | grep -q "maui-tizen"; then
+              dotnet workload install maui-tizen --skip-manifest-update
+          fi
 
-      # - name: "Restore Solution"
-      #   shell: bash
-      #   run: |
-      #     dotnet restore
+      - name: "Restore Solution"
+        shell: bash
+        run: |
+          dotnet restore
+      
+      - name: "Build Solution"
+        shell: bash
+        run: |
+          dotnet build --no-restore
