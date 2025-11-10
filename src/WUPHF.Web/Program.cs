@@ -9,6 +9,9 @@ builder.Services.AddRazorComponents()
 // Add HttpClient for API calls
 builder.Services.AddHttpClient();
 
+// Add controllers for vulnerable API endpoints
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +26,9 @@ app.UseStatusCodePagesWithReExecute("/not-found");
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+// Map controllers before other routing
+app.MapControllers();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
