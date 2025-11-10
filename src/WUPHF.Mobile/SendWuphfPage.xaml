@@ -61,7 +61,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Select Channels" FontSize="16" FontAttributes="Bold" />
 
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*" ColumnSpacing="10" RowSpacing="5">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*,*" ColumnSpacing="10" RowSpacing="5">
                         <CheckBox x:Name="FacebookCheck" Grid.Row="0" Grid.Column="0" IsChecked="True" />
                         <Label Text="📘 Facebook" Grid.Row="0" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
 
@@ -85,6 +85,9 @@
 
                         <CheckBox x:Name="InstagramCheck" Grid.Row="3" Grid.Column="1" />
                         <Label Text="📸 Instagram" Grid.Row="3" Grid.Column="1" Margin="30,0,0,0" VerticalOptions="Center" />
+
+                        <CheckBox x:Name="SlackCheck" Grid.Row="4" Grid.Column="0" />
+                        <Label Text="💬 Slack" Grid.Row="4" Grid.Column="0" Margin="30,0,0,0" VerticalOptions="Center" />
                     </Grid>
                 </VerticalStackLayout>
 

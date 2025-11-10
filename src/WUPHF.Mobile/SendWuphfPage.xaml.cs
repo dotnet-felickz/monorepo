@@ -90,6 +90,7 @@ public partial class SendWuphfPage : ContentPage
         if (PrinterCheck.IsChecked) channels.Add(WuphfChannel.Printer);
         if (LinkedInCheck.IsChecked) channels.Add(WuphfChannel.LinkedIn);
         if (InstagramCheck.IsChecked) channels.Add(WuphfChannel.Instagram);
+        if (SlackCheck.IsChecked) channels.Add(WuphfChannel.Slack);
 
         return channels;
     }
@@ -184,6 +185,7 @@ public partial class SendWuphfPage : ContentPage
         ChatCheck.IsChecked = false;
         LinkedInCheck.IsChecked = false;
         InstagramCheck.IsChecked = false;
+        SlackCheck.IsChecked = false;
 
         UpdateCharCount();
     }

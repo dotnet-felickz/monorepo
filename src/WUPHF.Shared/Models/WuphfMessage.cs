@@ -28,7 +28,8 @@ public enum WuphfChannel
     Chat,
     Printer,
     LinkedIn,
-    Instagram
+    Instagram,
+    Slack
 }
 
 /// <summary>

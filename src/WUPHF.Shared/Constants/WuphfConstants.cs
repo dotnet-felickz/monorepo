@@ -17,7 +17,7 @@ public static class WuphfConstants
     public static class Limits
     {
         public const int MaxMessageLength = 280; // Twitter-like limit
-        public const int MaxChannelsPerMessage = 8;
+        public const int MaxChannelsPerMessage = 9;
         public const int MaxMessagesPerUserPerDay = 100;
         public const int PrinterQueueLimit = 50;
     }
