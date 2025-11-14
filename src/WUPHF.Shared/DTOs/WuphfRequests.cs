@@ -50,3 +50,12 @@ public class GetWuphfHistoryRequest
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }
+
+/// <summary>
+/// Request to import WUPHF data from JSON
+/// "Ryan's revolutionary data import feature!" - Ryan Howard
+/// </summary>
+public class ImportWuphfDataRequest
+{
+    public string JsonData { get; set; } = string.Empty;
+}
