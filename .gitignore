@@ -425,3 +425,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Temporary installation scripts
+dotnet-install.sh
