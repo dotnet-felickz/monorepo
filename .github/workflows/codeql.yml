@@ -32,7 +32,7 @@ jobs:
           build-mode: manual
         - project: WUPHF.Mobile
           language: csharp
-          build-mode: none # Using none mode to avoid a linux android SDK and windows CodeQL path too long issue here :sigh:
+          build-mode: manual
         - project: WUPHF.Web
           language: csharp
           build-mode: manual
@@ -89,8 +89,10 @@ jobs:
         dotnet restore src/${{ matrix.project }}
         dotnet build src/${{ matrix.project }} -v minimal -tl:off
 
+
     - name: "Perform CodeQL Analysis for ${{ matrix.language }} ${{ matrix.project }}"
       uses: github/codeql-action/analyze@v3
       with:
         # /language:<lang> + Adds /project:{project} to the category if <project> is set in the matrix
         category: "/language:${{matrix.language}}${{ matrix.project && format('/project:{0}', matrix.project) || '' }}"
+
