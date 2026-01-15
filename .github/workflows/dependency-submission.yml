@@ -27,14 +27,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
           # dotnet-quality: 'preview'
+          dotnet-version: '10.x'
+       # Example AUTH - https://github.com/actions/setup-dotnet?tab=readme-ov-file#setting-up-authentication-for-nuget-feeds
+        #   source-url: https://pkgs.dev.azure.com/<your-organization>/_packaging/<your-feed-name>/nuget/v3/index.json
+        # env:
+        #   NUGET_AUTH_TOKEN: ${{secrets.AZURE_DEVOPS_PAT}} # Note, create a secret with this name in Settings
 
       - name: Ensure .NET MAUI workload is installed
         shell: pwsh
         run: |
             dotnet workload restore
-
+            
+      # Component detection inspects resolved nuget packages: https://github.com/microsoft/component-detection/blob/main/docs/detectors/nuget.md
       - name: Restore .NET dependencies
         run: dotnet restore
 
