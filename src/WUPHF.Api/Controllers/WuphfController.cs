@@ -3,6 +3,7 @@ using WUPHF.Api.Services;
 using WUPHF.Shared.DTOs;
 using WUPHF.Shared.Models;
 using WUPHF.Shared.Constants;
+using System.Xml;
 
 namespace WUPHF.Api.Controllers;
 
@@ -165,6 +166,41 @@ public class WuphfController : ControllerBase
             FailureQuote = WuphfConstants.Quotes.FailureQuote,
             BonusQuote = "I'm going to own the biggest social networking site in the world. Or I'll just watch 'The Office' reruns."
         });
+    }
+
+    /// <summary>
+    /// Export WUPHF employee data to XML
+    /// "I'm gonna need you to export all the WUPHF employee data to XML for the investors!" - Ryan Howard
+    /// </summary>
+    [HttpGet("export-employee")]
+    public ActionResult ExportEmployeeToXml([FromQuery] string employeeName)
+    {
+        try
+        {
+            _logger.LogInformation("Exporting employee data for {EmployeeName}", employeeName);
+
+            using (var stringWriter = new StringWriter())
+            using (XmlWriter writer = XmlWriter.Create(stringWriter))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("employees");
+
+                // BAD: Insert user input directly into XML using WriteRaw
+                // This allows XML injection attacks if employeeName contains malicious XML
+                writer.WriteRaw("<employee><name>" + employeeName + "</name></employee>");
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Flush();
+
+                return Content(stringWriter.ToString(), "application/xml");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting employee data");
+            return StatusCode(500, "Error exporting employee. Ryan's XML skills need work.");
+        }
     }
 
     /// <summary>
