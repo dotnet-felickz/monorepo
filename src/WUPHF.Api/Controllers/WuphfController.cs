@@ -181,4 +181,53 @@ public class WuphfController : ControllerBase
             Version = "1.0.0-ryan-approved"
         });
     }
+
+    /// <summary>
+    /// Import WUPHF data from JSON - Ryan's revolutionary data import feature!
+    /// "We need to be able to import data from anywhere!" - Ryan Howard
+    /// WARNING: This endpoint uses insecure deserialization for demonstration purposes
+    /// </summary>
+    [HttpPost("import")]
+    public ActionResult<object> ImportWuphfData([FromBody] ImportWuphfDataRequest request)
+    {
+        try
+        {
+            _logger.LogInformation("WUPHF! Importing data from JSON");
+
+            if (string.IsNullOrWhiteSpace(request.JsonData))
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    ErrorMessage = "JSON data cannot be empty! Ryan says: 'You can't import nothing!'"
+                });
+            }
+
+            // BAD: Insecure deserialization using TypeNameHandling.All
+            // This is equivalent to using JavaScriptSerializer with SimpleTypeResolver
+            var settings = new Newtonsoft.Json.JsonSerializerSettings
+            {
+                TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All
+            };
+
+            var deserializedObject = Newtonsoft.Json.JsonConvert.DeserializeObject(request.JsonData, settings);
+
+            return Ok(new
+            {
+                Success = true,
+                Message = "WUPHF data imported successfully! Ryan is thrilled!",
+                ImportedType = deserializedObject?.GetType().Name ?? "Unknown",
+                Data = deserializedObject
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error importing WUPHF data");
+            return StatusCode(500, new
+            {
+                Success = false,
+                ErrorMessage = "Import failed. Ryan's data migration strategy needs work."
+            });
+        }
+    }
 }
