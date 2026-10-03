@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add Razor Pages support
+builder.Services.AddRazorPages();
+
 // Add HttpClient for API calls
 builder.Services.AddHttpClient();
 
@@ -27,5 +30,8 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// Map Razor Pages endpoints
+app.MapRazorPages();
 
 app.Run();

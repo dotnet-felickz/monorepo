@@ -1,0 +1,24 @@
+@page
+@model WUPHF.Web.Pages.VulnerableEchoModel
+@{
+ ViewData["Title"] = "Vulnerable Echo (XSS Demo)";
+}
+
+<div class="container py-4">
+ <h4 class="mb-3 text-danger">?? Reflected XSS Vulnerability Demo (Razor Page)</h4>
+ <form method="post">
+ <div class="mb-3">
+ <label for="userInput" class="form-label">Enter any text (will be reflected unsanitized):</label>
+ <input id="userInput" name="UserInput" class="form-control" value="@Model.UserInput" />
+ </div>
+ <button type="submit" class="btn btn-warning">Echo Back</button>
+ </form>
+
+ @if (!string.IsNullOrEmpty(Model.UserInput))
+ {
+ <div class="alert alert-danger mt-4">
+ <strong>Reflected Output:</strong>
+ <div>@Html.Raw(Model.UserInput)</div>
+ </div>
+ }
+</div>
